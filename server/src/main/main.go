@@ -17,5 +17,8 @@ func main() {
 		database.SetupSchema()
 	} else {
 		http.ListenAndServe("0.0.0.0:2305", routes.Routes())
+
+
+
 	}
 }
