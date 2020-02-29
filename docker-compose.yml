@@ -1,0 +1,52 @@
+---
+# Compose file for development only
+
+version: '3.7'
+services:
+  server:
+    tty: true
+    init: true
+    build:
+      context: ./server
+      target: 'development'
+    networks:
+      - backend
+      - database
+    environment:
+      USER_PASSWORD: "vL+GlIm0we5VH0OB3ebwdA=="
+      POSTGRES_PASSWORD: "Jz7b1576N4HZxNEbqvRh9g=="
+    volumes:
+      - ./server/src:/go/src/heard
+
+  database-service:
+    tty: true
+    image: postgres:11.7
+    networks:
+      - database
+    environment:
+      POSTGRES_PASSWORD: "Jz7b1576N4HZxNEbqvRh9g=="
+    volumes:
+      - data:/var/lib/postgresql/data
+
+  client:
+    tty: true
+    init: true
+    build:
+      context: ./client
+      target: 'development'
+    ports:
+      - 3000:3000
+    networks:
+      - backend
+    tmpfs:
+      - /app/node_modules
+
+    volumes:
+      - ./client:/app
+
+networks:
+  backend:
+  database:
+
+volumes:
+  data:
