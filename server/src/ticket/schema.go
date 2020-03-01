@@ -1,9 +1,9 @@
 package ticket
 
 import (
-	"os"
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"os"
 )
 
 const schema = `

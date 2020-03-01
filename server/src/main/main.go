@@ -1,9 +1,9 @@
 package main
 
 import (
-	"os"
 	"flag"
 	"net/http"
+	"os"
 
 	"heard/database"
 	"heard/routes"
