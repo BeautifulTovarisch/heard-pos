@@ -1,6 +1,8 @@
 // Package provides shared utilities for performing database operations.
 // Intended to abstract away lower-level database interaction from 'CRUD' modules.
 //
+// Contains opt-in database schema creation.
+//
 // TODO:
 //   - Fetch database url, password from kv-store (consul, etcd, riak etc...)
 //   - Decide on recovery strategy

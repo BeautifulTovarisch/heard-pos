@@ -1,6 +1,8 @@
 package ticket
 
 import (
+	"os"
+	"fmt"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -10,9 +12,11 @@ CREATE TABLE IF NOT EXISTS ticket (
 );
 `
 
+// We don't close the connection here as it's intended to be shared.
 func LoadSchema(conn *sqlx.DB) {
 	_, err := conn.Exec(schema)
 
-	if err != nil { /* Do some error handling */
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error loading 'ticket' schema: %v", err)
 	}
 }

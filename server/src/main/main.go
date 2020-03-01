@@ -1,8 +1,8 @@
 package main
 
 import (
+	"os"
 	"flag"
-	"fmt"
 	"net/http"
 
 	"heard/database"
@@ -16,10 +16,9 @@ func main() {
 	if *run_migration {
 		database.SetupSchema()
 	} else {
-		http.ListenAndServe("0.0.0.0:2305", routes.Routes())
+		conn := database.Connect("pos", "pos", os.Getenv("USER_PASSWORD"))
+		defer conn.Close()
 
-
-
-
+		http.ListenAndServe("0.0.0.0:2305", routes.Routes(conn))
 	}
 }
