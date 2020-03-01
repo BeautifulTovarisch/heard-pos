@@ -15,6 +15,7 @@ import (
 	"os"
 
 	"heard/ticket"
+	"heard/product"
 
 	"github.com/jmoiron/sqlx"
 
@@ -52,17 +53,17 @@ func setup_database(conn *sqlx.DB) {
 
 	_, err := conn.Exec(create_user)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating 'pos' user: %v", err)
+		fmt.Fprintf(os.Stderr, "Error creating 'pos' user: %v\n", err)
 	}
 
 	_, err = conn.Exec(create_schema)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating 'pos' schema: %v", err)
+		fmt.Fprintf(os.Stderr, "Error creating 'pos' schema: %v\n", err)
 	}
 
 	_, err = conn.Exec(create_database)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating 'pos' database: %v", err)
+		fmt.Fprintf(os.Stderr, "Error creating 'pos' database: %v\n", err)
 	}
 }
 
@@ -75,6 +76,11 @@ func SetupSchema() {
 
 	_, err := conn.Exec(ticket.Schema)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating 'ticket' schema: %v", err)
+		fmt.Fprintf(os.Stderr, "Error creating 'ticket' schema: %v\n", err)
+	}
+
+	_, err = conn.Exec(product.Schema)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating 'product' schema: %v\n", err)
 	}
 }
