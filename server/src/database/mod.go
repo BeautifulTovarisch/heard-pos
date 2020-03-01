@@ -14,8 +14,8 @@ import (
 	"fmt"
 	"os"
 
-	"heard/ticket"
 	"heard/product"
+	"heard/ticket"
 
 	"github.com/jmoiron/sqlx"
 
