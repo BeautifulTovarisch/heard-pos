@@ -1,3 +1,7 @@
+// api.go /api/ticket
+//
+// RESTful endpoints to abstract database interaction for Tickets.
+//
 package ticket
 
 import (

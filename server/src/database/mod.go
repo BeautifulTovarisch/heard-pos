@@ -73,5 +73,8 @@ func SetupSchema() {
 	conn = Connect("pos", "pos", os.Getenv("USER_PASSWORD"))
 	defer conn.Close()
 
-	ticket.LoadSchema(conn)
+	_, err := conn.Exec(ticket.Schema)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating 'ticket' schema: %v", err)
+	}
 }
