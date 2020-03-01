@@ -6,15 +6,15 @@ package ticket
 
 import (
 	"fmt"
-	"time"
 	"github.com/jmoiron/sqlx"
 	"os"
+	"time"
 )
 
 type Ticket struct {
-	id int32
-	order int32
-	table int32
+	id     int32
+	order  int32
+	table  int32
 	server string
 
 	opened time.Time
