@@ -6,19 +6,20 @@ package ticket
 
 import (
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	"os"
 	"time"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type Ticket struct {
-	id     int32
-	order  int32
-	table  int32
-	server string
+	Id          int64
+	Server      string
+	OrderNumber int8 `db:"order_no"`
+	TableNumber int8 `db:"table_no"`
 
-	opened time.Time
-	closed time.Time
+	Opened time.Time
+	Closed time.Time
 }
 
 const Schema = `
@@ -28,22 +29,40 @@ CREATE TABLE IF NOT EXISTS ticket (
 	order_no integer NOT NULL DEFAULT 1,
 	table_no integer NOT NULL,
 
-	opened timestamp WITH TIME ZONE,
+	opened timestamp WITH TIME ZONE DEFAULT NOW(),
 	closed timestamp WITH TIME ZONE CHECK (opened < closed)
 );
 `
 
-var insert = `
-INSERT INTO ticket(order, table, server)
-VALUES(:order, :table, :server)
+// Increment orders #s within a 24 hour period
+// This avoids outrageous order numbers having to be read by the expediter
+var create_ticket = `
+INSERT INTO ticket(server, table_no, order_no)
+SELECT :server, :table_no, count(id) + 1
+	FROM ticket
+	WHERE ticket.opened <= current_timestamp + interval '1 day'
+	AND ticket.opened >= current_timestamp - interval '1 day'
 RETURNING id;
 `
 
 // We increment order # based on total number of tickets since opening
-func Insert(conn *sqlx.DB, ticket Ticket) {
-	_, err := conn.NamedExec(insert, &ticket)
+func Insert(conn *sqlx.DB, ticket Ticket) int64 {
+	var id int64
+	// Need to use NamedQuery due to the fact that LastInserted() not supported
+	rows, err := conn.NamedQuery(create_ticket, ticket)
+	defer rows.Close()
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error inserting ticket %v", err)
+		fmt.Fprintf(os.Stderr, "Error inserting ticket %v\n", err)
 	}
+
+	for rows.Next() {
+		err := rows.Scan(&id)
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error retrieving inserted ticket id: %v", err)
+		}
+	}
+
+	return id
 }

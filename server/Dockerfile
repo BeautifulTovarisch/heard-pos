@@ -13,10 +13,12 @@ RUN curl -L http://eradman.com/entrproject/code/entr-4.3.tar.gz -o /tmp/entr-4.3
 
 COPY ./src /go/src/heard
 
-RUN go test heard/...
+RUN go test -short heard/...
 RUN go install -i heard/main
 
-CMD find -name "*.go" | entr -r sh -c "go test heard/... && go run heard/main"
+CMD find -name "*.go" | entr -r sh -c "go fmt heard/... \
+&& go test -v heard/... \
+&& go run heard/main"
 
 # Production #############################
 FROM scratch

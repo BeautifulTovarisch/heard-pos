@@ -20,7 +20,6 @@ import (
 	"github.com/jmoiron/sqlx"
 
 	_ "github.com/jackc/pgx/stdlib"
-	_ "github.com/jackc/pgx/v4"
 )
 
 var create_user = fmt.Sprintf(`
