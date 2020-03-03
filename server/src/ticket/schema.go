@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS ticket (
 
 // Increment orders #s within a 24 hour period
 // This avoids outrageous order numbers having to be read by the expediter
+// TODO :: Consider calculating based on the last order number in a time period
 var create_ticket = `
 INSERT INTO ticket(server, table_no, order_no)
 SELECT :server, :table_no, count(id) + 1
@@ -48,7 +49,7 @@ RETURNING id;
 // We increment order # based on total number of tickets since opening
 func Insert(conn *sqlx.DB, ticket Ticket) int64 {
 	var id int64
-	// Need to use NamedQuery due to the fact that LastInserted() not supported
+	// Need to use NamedQuery due to the fact that LastInsertId() not supported
 	rows, err := conn.NamedQuery(create_ticket, ticket)
 	defer rows.Close()
 
